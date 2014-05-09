@@ -23,13 +23,21 @@
 
           window.keyboard.onKeyDown(['up', 'down', 'left', 'right'], function (key) {
             switch(key.key) {
-              case 'up': box.setGravity(0, -1)
+              case 'up':
+                box.setGravity(0, -1)
+                box.addRandomBall('bottom')
               break;
-              case 'down': box.setGravity(0, 1)
+              case 'down':
+                box.setGravity(0, 1)
+                box.addRandomBall('top')
               break;
-              case 'left': box.setGravity(-1, 0)
+              case 'left':
+                box.setGravity(-1, 0)
+                box.addRandomBall('right')
               break;
-              case 'right': box.setGravity(1, 0)
+              case 'right':
+                box.setGravity(1, 0)
+                box.addRandomBall('left')
               break;
             }
           })
