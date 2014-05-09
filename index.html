@@ -16,29 +16,26 @@
 
         window.addEventListener('load', function () {
           window.box = new Box(document.getElementById('canvas-container'))
-          // window.addEventListener('deviceorientation', function (event) {
-          //   var x = Matter.Common.clamp(event.gamma, -90, 90) / 90,
-          //       y = Matter.Common.clamp(event.beta, -90, 90) / 90
-          //   box.setGravity(x, y)
-          // }, true)
+          window.addEventListener('deviceorientation', function (event) {
+            var strength = 2,
+                x = Matter.Common.clamp(event.gamma, -90, 90) / 90 * strength,
+                y = Matter.Common.clamp(event.beta, -90, 90) / 90 * strength
+            box.setGravity(x, y)
+          }, true)
 
           window.keyboard.onKeyUp(['up', 'down', 'left', 'right'], function (key) {
             switch(key.key) {
               case 'up':
                 box.setGravity(0, -1)
-                box.addRandomBall('bottom')
               break;
               case 'down':
                 box.setGravity(0, 1)
-                box.addRandomBall('top')
               break;
               case 'left':
                 box.setGravity(-1, 0)
-                box.addRandomBall('right')
               break;
               case 'right':
                 box.setGravity(1, 0)
-                box.addRandomBall('left')
               break;
             }
           })
