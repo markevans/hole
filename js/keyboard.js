@@ -7,18 +7,18 @@ window.keyboard = (function () {
     40: 'down'
   }
 
-  var keyDownCallbacks = []
+  var keyUpCallbacks = []
 
   var keyMatches = function (keyMatcher, key) {
     return keyMatcher.indexOf(key.key) > -1
   }
 
-  window.addEventListener('keydown', function (event) {
+  window.addEventListener('keyup', function (event) {
     var key = {
       code: event.keyCode,
       key: keyMap[event.keyCode]
     }
-    keyDownCallbacks.forEach(function (obj) {
+    keyUpCallbacks.forEach(function (obj) {
       if ( keyMatches(obj.keyMatcher, key) ) {
         obj.callback(key)
       }
@@ -26,8 +26,8 @@ window.keyboard = (function () {
   });
 
   return {
-    onKeyDown: function (keyMatcher, callback) {
-      keyDownCallbacks.push({keyMatcher: keyMatcher, callback: callback})
+    onKeyUp: function (keyMatcher, callback) {
+      keyUpCallbacks.push({keyMatcher: keyMatcher, callback: callback})
     }
   }
 })()

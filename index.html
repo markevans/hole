@@ -5,6 +5,7 @@
   <style>
     body {
       margin: 0;
+      overflow: hidden;
     }
   </style>
   <script src="/js/matter-0.8.0.min.js"></script>
@@ -21,7 +22,7 @@
           //   box.setGravity(x, y)
           // }, true)
 
-          window.keyboard.onKeyDown(['up', 'down', 'left', 'right'], function (key) {
+          window.keyboard.onKeyUp(['up', 'down', 'left', 'right'], function (key) {
             switch(key.key) {
               case 'up':
                 box.setGravity(0, -1)
