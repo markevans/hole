@@ -32,25 +32,26 @@ window.Box = (function () {
     extend(this.engine.render.canvas, {width: width, height: height})
 
     // Walls
+    var offset = 5
     Matter.World.add(world, [
-      Matter.Bodies.rectangle(width * 0.5, 0, width + 0.5, 0.5, { isStatic: true }),
-      Matter.Bodies.rectangle(width * 0.5, height, width + 0.5, 0.5, { isStatic: true }),
-      Matter.Bodies.rectangle(width, height * 0.5, 0.5, height + 0.5, { isStatic: true }),
-      Matter.Bodies.rectangle(0, height * 0.5, 0.5, height + 0.5, { isStatic: true })
+      Matter.Bodies.rectangle(width*0.5, -offset, width+0.5, 50.5, { isStatic: true }),
+      Matter.Bodies.rectangle(width*0.5, height+offset, width+0.5, 50.5, { isStatic: true }),
+      Matter.Bodies.rectangle(width+offset, height*0.5, 50.5, height+0.5, { isStatic: true }),
+      Matter.Bodies.rectangle(-offset, height*0.5, 50.5, height+0.5, { isStatic: true })
     ])
 
     //Matter.World.add(world, Matter.MouseConstraint.create(this.engine));
 
     // Balls
-    Matter.World.add(world, Matter.Bodies.circle(100, 100, 50, { restitution: 0.2, render: {fillStyle: 'red', strokeStyle: 'red'}}))
-    Matter.World.add(world, Matter.Bodies.circle(300, 100, 50, { restitution: 0.2, render: {fillStyle: 'green', strokeStyle: 'green'}}))
+    this.addBall(50, 'red', 100, 100)
+    this.addBall(50, 'green', 300, 100)
 
     // Collisions
     Matter.Events.on(this.engine, 'collisionStart', function (event) {
       event.pairs.forEach(function (pair) {
         if (pair.bodyA.render.fillStyle === 'red' && pair.bodyB.render.fillStyle === 'green') {
           var position = averagePosition(pair.bodyA.position, pair.bodyB.position)
-          Matter.World.add(world, Bodies.circle(position.x, position.y, 30, { restitution: 0.2, render: {fillStyle: 'blue', strokeStyle: 'blue'}}))
+          Matter.World.add(world, Matter.Bodies.circle(position.x, position.y, 30, { restitution: 0.2, render: {fillStyle: 'blue', strokeStyle: 'blue'}}))
         }
       })
     })
@@ -58,10 +59,18 @@ window.Box = (function () {
   }
 
   Box.prototype = {
-    updateGravity: function () {
-      var gravity = this.engine.world.gravity;
-      gravity.x = Common.clamp(event.gamma, -90, 90) / 90;
-      gravity.y = Common.clamp(event.beta, -90, 90) / 90;
+    addBall: function (radius, colour, x, y) {
+      var ball = Matter.Bodies.circle(x, y, radius, {
+        restitution: 0.2, render: {
+          fillStyle: colour,
+          strokeStyle: colour
+        }
+      })
+      Matter.World.add(this.engine.world, ball)
+    },
+
+    setGravity: function (x, y) {
+      extend(this.engine.world.gravity, {x: x, y: y})
     },
 
     canvas: function () {
