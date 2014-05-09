@@ -7,6 +7,13 @@ window.Box = (function () {
     }
   }
 
+  function combinedRadius (radiusA, radiusB) {
+    var power = 2,
+        weightA = Math.pow(radiusA, power),
+        weightB = Math.pow(radiusB, power)
+    return Math.pow(weightA + weightB, 1/power)
+  }
+
   function extend(object, attributes) {
     var key
     for(key in attributes) {
@@ -47,11 +54,18 @@ window.Box = (function () {
     this.addBall(50, 'green', 300, 100)
 
     // Collisions
+    var self = this
     Matter.Events.on(this.engine, 'collisionStart', function (event) {
       event.pairs.forEach(function (pair) {
-        if (pair.bodyA.render.fillStyle === 'red' && pair.bodyB.render.fillStyle === 'green') {
-          var position = averagePosition(pair.bodyA.position, pair.bodyB.position)
-          Matter.World.add(world, Matter.Bodies.circle(position.x, position.y, 30, { restitution: 0.2, render: {fillStyle: 'blue', strokeStyle: 'blue'}}))
+        var a = pair.bodyA,
+            b = pair.bodyB
+        if (a.label === 'Circle Body' &&
+              b.label === 'Circle Body' &&
+              a.render.fillStyle === b.render.fillStyle) {
+          var position = averagePosition(a.position, b.position)
+          self.removeBall(a)
+          self.removeBall(b)
+          self.addBall(combinedRadius(a.circleRadius, b.circleRadius), 'blue', position.x, position.y)
         }
       })
     })
@@ -67,6 +81,10 @@ window.Box = (function () {
         }
       })
       Matter.World.add(this.engine.world, ball)
+    },
+
+    removeBall: function (ball) {
+      Matter.World.remove(this.engine.world, ball)
     },
 
     setGravity: function (x, y) {
