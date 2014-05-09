@@ -25,7 +25,7 @@ window.Box = (function () {
       Matter.Bodies.rectangle(-offset, height*0.5, 50.5, height+0.5, { isStatic: true })
     ])
     // Hole
-    Matter.World.add(world, Matter.Bodies.circle(width/2, height/2, 80, {isStatic: true, render: {fillStyle: 'black'}, collisionLabel: 'hole'}))
+    Matter.World.add(world, Matter.Bodies.circle(width/2, height/2, 40, {isStatic: true, render: {fillStyle: 'black'}, collisionLabel: 'hole'}))
     // Sinks
     var positions = [
       [width*1/4, height*1/4],
