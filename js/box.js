@@ -25,11 +25,8 @@ window.Box = (function () {
       Matter.Bodies.rectangle(-offset, height*0.5, 50.5, height+0.5, { isStatic: true })
     ])
 
-    //Matter.World.add(world, Matter.MouseConstraint.create(this.engine));
-
-    // Balls
-    this.addBall(50, 'red', 100, 100)
-    this.addBall(50, 'green', 300, 100)
+    // Init Balls
+    this.addRandomBall('top')
 
     // Collisions
     var self = this
