@@ -8,6 +8,7 @@
     }
   </style>
   <script src="/js/matter-0.8.0.min.js"></script>
+  <script src="/js/box.js"></script>
   <script>
     (function() {
 
@@ -23,71 +24,12 @@
             Constraint = Matter.Constraint,
             MouseConstraint = Matter.MouseConstraint;
 
-        var engine;
-
-        function init () {
-          var canvasContainer = document.getElementById('canvas-container')
-
-          engine = Engine.create(canvasContainer, { render: { options: { wireframes: false } } });
-          makeFullScreen(engine.render.canvas)
-
-          Matter.Engine.run(engine);
-          var sceneWidth = document.documentElement.clientWidth,
-              sceneHeight = document.documentElement.clientHeight;
-
-          var boundsMax = engine.world.bounds.max,
-              renderOptions = engine.render.options,
-              canvas = engine.render.canvas,
-              world = engine.world;
-
-          boundsMax.x = sceneWidth;
-          boundsMax.y = sceneHeight;
-
-          canvas.width = renderOptions.width = sceneWidth;
-          canvas.height = renderOptions.height = sceneHeight;
-
-          // Walls
-          World.add(world, [
-            Bodies.rectangle(sceneWidth * 0.5, 0, sceneWidth + 0.5, 0.5, { isStatic: true }),
-            Bodies.rectangle(sceneWidth * 0.5, sceneHeight, sceneWidth + 0.5, 0.5, { isStatic: true }),
-            Bodies.rectangle(sceneWidth, sceneHeight * 0.5, 0.5, sceneHeight + 0.5, { isStatic: true }),
-            Bodies.rectangle(0, sceneHeight * 0.5, 0.5, sceneHeight + 0.5, { isStatic: true })
-          ])
-
-          World.add(world, MouseConstraint.create(engine));
-
-          // Balls
-          World.add(world, Bodies.circle(100, 100, 50, { restitution: 0.2, render: {fillStyle: 'red', strokeStyle: 'red'}}))
-          World.add(world, Bodies.circle(300, 100, 50, { restitution: 0.2, render: {fillStyle: 'green', strokeStyle: 'green'}}))
-
-          // Collisions
-          Events.on(engine, 'collisionStart', function (event) {
-            event.pairs.forEach(function (pair) {
-              if (pair.bodyA.render.fillStyle === 'red' && pair.bodyB.render.fillStyle === 'green') {
-                var position = averagePosition(pair.bodyA.position, pair.bodyB.position)
-                World.add(world, Bodies.circle(position.x, position.y, 30, { restitution: 0.2, render: {fillStyle: 'blue', strokeStyle: 'blue'}}))
-              }
-            })
-          })
-
-          window.addEventListener('deviceorientation', updateGravity, true);
+        window.addEventListener('load', function () {
+          window.box = new Box(document.getElementById('canvas-container'))
+          //window.addEventListener('deviceorientation', updateGravity, true);
           window.addEventListener('keydown', function (event) { console.log(event.keyCode) });
-        };
-
-        window.addEventListener('load', init);
-
-        function updateGravity () {
-          var gravity = engine.world.gravity;
-          gravity.x = Common.clamp(event.gamma, -90, 90) / 90;
-          gravity.y = Common.clamp(event.beta, -90, 90) / 90;
-        };
-
-        function averagePosition (posA, posB) {
-          return {
-            x: (posA.x + posB.x)/2,
-            y: (posA.y + posB.y)/2
-          }
-        }
+          makeFullScreen(box.canvas())
+        });
 
         function makeFullScreen (element) {
           if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement) {
